@@ -1,0 +1,15 @@
+Attention Mechanism Analysis and Interpretation
+
+The Bahdanau attention mechanism plays a crucial role in improving the interpretability and performance of the Seq2Seq forecasting model. Unlike standard recurrent models that compress the entire input sequence into a single hidden state, attention allows the decoder to dynamically focus on different parts of the input sequence when generating predictions.
+
+During decoding, attention weights are computed by comparing the decoder’s current hidden state with all encoder outputs. These weights represent the relative importance of each historical time step for the current prediction. The resulting context vector is a weighted sum of encoder states, enabling selective retrieval of temporal information.
+
+Analysis of attention behavior across validation and test samples reveals consistent and meaningful patterns. The model assigns higher attention weights to recent time steps, reflecting the autoregressive nature of time series forecasting, where recent observations often contain the most relevant predictive information. However, the attention distribution does not collapse entirely onto the final step. Instead, earlier positions in the lookback window retain non-negligible weight, indicating that the model leverages broader temporal context.
+
+The presence of seasonal components in the data is also reflected in the attention distributions. Peaks in attention weights often align with time steps corresponding to known periodicities embedded in the synthetic data. This behavior suggests that the model has learned to associate recurring historical patterns with future outcomes, validating the effectiveness of attention in capturing seasonality.
+
+When attention weights are examined across multiple samples, they exhibit smooth and stable distributions rather than erratic or noisy behavior. This consistency indicates that the model’s focus strategy is systematic rather than sample-specific overfitting. Aggregated attention patterns further confirm that the model balances short-term dynamics with longer-range dependencies.
+
+From a performance perspective, the attention-enhanced Seq2Seq model outperforms simpler architectures by avoiding information bottlenecks and enabling flexible context selection. The improved RMSE achieved by the model can be attributed to its ability to emphasize informative time steps while down-weighting irrelevant or noisy observations.
+
+In conclusion, the attention mechanism significantly enhances both predictive accuracy and model interpretability. By providing insight into how historical information is utilized, attention supports more transparent and reliable forecasting, making it a valuable component in advanced time series modeling.

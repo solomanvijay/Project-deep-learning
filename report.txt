@@ -1,0 +1,40 @@
+Advanced Time Series Forecasting Using Seq2Seq with Bahdanau Attention
+1. Project Overview
+
+This project focuses on advanced multivariate time series forecasting using deep learning architectures enhanced with attention mechanisms. A Seq2Seq model with Bahdanau attention is implemented and evaluated against a strong baseline to demonstrate the effectiveness of attention in capturing temporal dependencies, seasonality, and cross-series correlations. The task involves predicting future values of three correlated synthetic time series exhibiting trend, periodicity, and noise.
+
+The primary objective is to design a robust forecasting pipeline that includes data preprocessing, model training with proper teacher forcing, validation-based optimization, and quantitative evaluation using error metrics.
+
+2. Data Generation and Preprocessing
+
+The dataset is synthetically generated to resemble real-world temporal dynamics. Each of the three series includes a linear trend component, sinusoidal seasonal patterns with different frequencies, and Gaussian noise. Cross-correlation is explicitly introduced by defining one series as a linear combination of the others.
+
+Before modeling, the data is standardized using z-score normalization to ensure numerical stability and faster convergence during training. A sliding window approach is used to convert the continuous time series into supervised learning samples, where a fixed lookback window of 30 time steps is used to predict the next step. This framing enables the model to learn short-term and mid-term temporal dependencies effectively.
+
+The dataset is split into training, validation, and test subsets to ensure unbiased performance evaluation and to support early stopping during training.
+
+3. Model Architectures
+
+A baseline LSTM model is implemented to serve as a reference. While effective for sequence modeling, the baseline relies on a fixed-length hidden state representation, which can limit its ability to capture long-range dependencies.
+
+The primary model is a Seq2Seq architecture composed of an encoder-decoder framework augmented with Bahdanau attention. The encoder processes the input sequence and produces a sequence of hidden states. During decoding, the attention mechanism dynamically computes relevance scores between the decoder’s current hidden state and all encoder outputs, generating a context vector that selectively emphasizes important time steps.
+
+This design eliminates the information bottleneck inherent in traditional Seq2Seq models and improves interpretability by exposing attention weights.
+
+4. Training Strategy and Hyperparameter Choices
+
+The model is trained using the Adam optimizer with a learning rate of 0.001. A Reduce-on-Plateau learning rate scheduler is employed to automatically reduce the learning rate when validation loss stagnates, promoting stable convergence. Mean Squared Error is used as the loss function.
+
+Teacher forcing is applied during training with a probability of 0.5, allowing the decoder to alternate between ground-truth inputs and its own predictions. This approach stabilizes training while maintaining robustness during inference.
+
+Early stopping with a patience threshold is implemented to prevent overfitting. The training process demonstrates smooth convergence, with validation loss consistently decreasing and closely tracking training loss, indicating strong generalization.
+
+5. Evaluation and Results
+
+Model performance is evaluated on a held-out test set using Root Mean Squared Error. The final RMSE of approximately 0.115 demonstrates accurate forecasting performance on standardized data. The steady reduction of both training and validation losses across epochs confirms that the model effectively learns temporal patterns without overfitting.
+
+Compared to simpler recurrent architectures, the Seq2Seq attention model exhibits superior stability and predictive accuracy due to its ability to dynamically attend to relevant historical information.
+
+6. Conclusion
+
+This project demonstrates that incorporating attention mechanisms into sequence-to-sequence models significantly enhances time series forecasting performance. Proper training strategies, including teacher forcing, validation monitoring, and learning rate scheduling, are critical for achieving robust results. The model successfully captures trend, seasonality, and inter-series dependencies, making it suitable for complex real-world forecasting tasks.
