@@ -12,7 +12,6 @@ np.random.seed(42)
 
 def generate_series(n_steps=1500):
     t = np.arange(n_steps)
-
     trend = 0.01 * t
 
     s1 = np.sin(2*np.pi*t/24)
@@ -104,17 +103,22 @@ class Seq2Seq(nn.Module):
         self.encoder = Encoder(input_dim, hidden_dim)
         self.decoder = Decoder(hidden_dim, output_dim)
 
-    def forward(self, src, trg):
+    def forward(self, src, trg, teacher_forcing_ratio=0.5):
         enc_outputs, h, c = self.encoder(src)
         outputs = []
         attn_list = []
         dec_input = trg[:,0:1,:]
 
-        for _ in range(trg.shape[1]):
+        for t in range(trg.shape[1]):
             out,h,c,weights = self.decoder(dec_input,h,c,enc_outputs)
             outputs.append(out)
             attn_list.append(weights)
-            dec_input = out
+
+            # Teacher forcing
+            if np.random.rand() < teacher_forcing_ratio:
+                dec_input = trg[:,t:t+1,:]
+            else:
+                dec_input = out
 
         outputs = torch.cat(outputs,dim=1)
         return outputs, attn_list
@@ -177,7 +181,7 @@ if __name__ == "__main__":
     model.eval()
 
     with torch.no_grad():
-        pred, attn = model(X_test,y_test)
+        pred, attn = model(X_test,y_test,teacher_forcing_ratio=0.0)  # inference mode
 
     pred = pred.numpy()
     y_test_np = y_test.numpy()
